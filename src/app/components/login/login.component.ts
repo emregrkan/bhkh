@@ -19,9 +19,9 @@ export class LoginComponent implements OnInit {
   constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
-    this.authService.getTestUsers().subscribe({
-      next: (users) => console.log(users),
-    });
+    if (!this.authService.token) {
+      this.authService.refreshToken();
+    }
   }
 
   onSubmit() {
@@ -35,17 +35,12 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    this.authService.signIn(this.emailAndPaswordModel).subscribe({
-      next: (tokens) => console.log(tokens),
-      error: (error) => {
-        if (error.status === 401) {
-          alert('E-postanız veya şifreniz doğru değil.');
-        }
-      },
-      complete: () =>
-        this.authService.getTestUsers().subscribe({
-          next: (value) => console.log(value),
-        }),
+    this.authService.signIn(this.emailAndPaswordModel);
+  }
+
+  onTest() {
+    this.authService.getTestUsers().subscribe({
+      next: (users) => console.log(users),
     });
   }
 }
