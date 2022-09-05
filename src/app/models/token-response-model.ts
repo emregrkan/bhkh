@@ -1,4 +1,3 @@
 export interface TokenResponseModel {
-    accessToken: string;
-    refreshToken: string;
+  accessToken: string;
 }

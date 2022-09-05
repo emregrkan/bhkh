@@ -1,15 +1,20 @@
 <div class="flex justify-center w-full mt-12">
-  <div class="card p-4 border-2 shadow-md">
+  <form class="card p-4 border-2 shadow-md" (ngSubmit)="onSubmit()">
     <h2 class="card-title">Giriş Yap</h2>
     <div class="card-body">
       <div class="form-control w-full max-w-xs">
         <label class="label">
           <span class="label-text">
             <fa-icon [icon]="mailIcon"></fa-icon>
-            Email
+            E-posta
           </span>
         </label>
-        <input type="text" class="input input-bordered w-full max-w-xs" />
+        <input
+          type="email"
+          name="email"
+          [(ngModel)]="emailAndPaswordModel.email"
+          class="input input-bordered w-full max-w-xs"
+        />
       </div>
       <div class="form-control w-full max-w-xs">
         <label class="label">
@@ -17,11 +22,16 @@
             <fa-icon [icon]="passwordIcon"></fa-icon> Şifre
           </span>
         </label>
-        <input type="password" class="input input-bordered w-full max-w-xs" />
+        <input
+          type="password"
+          name="password"
+          [(ngModel)]="emailAndPaswordModel.password"
+          class="input input-bordered w-full max-w-xs"
+        />
       </div>
       <div class="card-actions justify-end mt-4">
         <button class="btn btn-primary" type="submit">Giriş Yap</button>
       </div>
     </div>
-  </div>
+  </form>
 </div>
