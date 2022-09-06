@@ -8,6 +8,9 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { LoginComponent } from './components/login/login.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { TestUsersComponent } from './components/test-users/test-users.component';
+import { StoryComponent } from './components/story/story.component';
+import { StoryCardComponent } from './components/story-card/story-card.component';
+import { HomeComponent } from './components/home/home.component';
 
 @NgModule({
   declarations: [
@@ -15,6 +18,9 @@ import { TestUsersComponent } from './components/test-users/test-users.component
     NavbarComponent,
     LoginComponent,
     TestUsersComponent,
+    StoryComponent,
+    StoryCardComponent,
+    HomeComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, FontAwesomeModule, FormsModule],
   providers: [],

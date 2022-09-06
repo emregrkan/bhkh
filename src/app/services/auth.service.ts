@@ -16,7 +16,7 @@ export class AuthService {
 
   constructor(private router: Router) {}
 
-  private async getAccessToken() {
+  async getAccessToken() {
     if (!this.accessToken) {
       await this.refreshToken();
     }
