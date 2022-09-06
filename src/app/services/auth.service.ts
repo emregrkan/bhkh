@@ -1,17 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { catchError, map, shareReplay } from 'rxjs/operators';
 import { EmailAndPasswordModel } from '../models/email-and-password-model';
 import { TokenResponseModel } from '../models/token-response-model';
 import { environment } from 'src/environments/environment';
-
-const httpOptions = {
-  headers: new HttpHeaders({
-    'Content-Type': 'application/x-www-form-urlencoded',
-  }),
-  withCredentials: true,
-};
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -19,47 +11,84 @@ const httpOptions = {
 export class AuthService {
   private apiLoginUrl: string = `${environment.api}/auth/login`;
   private apiRefreshUrl: string = `${environment.api}/auth/refresh`;
+  private apiMeUrl: string = `${environment.api}/auth/me`;
   private accessToken: string | null = null;
 
-  constructor(private http: HttpClient) {}
+  constructor(private router: Router) {}
 
-  signIn(emailAndPassword: EmailAndPasswordModel) {
+  private async getAccessToken() {
+    if (!this.accessToken) {
+      await this.refreshToken();
+    }
+
+    return this.accessToken;
+  }
+
+  async signIn(emailAndPassword: EmailAndPasswordModel) {
     const urlencoded = new URLSearchParams();
     urlencoded.append('email', emailAndPassword.email);
     urlencoded.append('password', emailAndPassword.password);
 
-    this.http
-      .post<TokenResponseModel>(this.apiLoginUrl, urlencoded, httpOptions)
-      .subscribe({
-        next: ({ accessToken }) => (this.accessToken = accessToken),
-        error: (err) => {
-          console.log(err);
-          this.accessToken = null;
-        },
-      });
-  }
-
-  refreshToken() {
-    this.http
-      .get<TokenResponseModel>(this.apiRefreshUrl, httpOptions)
-      .subscribe({
-        next: ({ accessToken }) => (this.accessToken = accessToken),
-        complete() {
-          console.log('auth service: refresh completed');
-        },
-      });
-  }
-
-  get token(): string | null {
-    return this.accessToken;
-  }
-
-  getTestUsers() {
-    // TODO: fix interceptor
-    return this.http.get(`${environment.api}/users`, {
+    const response = await fetch(this.apiLoginUrl, {
+      method: 'POST',
       headers: {
-        Authorization: `Bearer ${this.accessToken}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
+      body: urlencoded,
+      credentials: 'include',
     });
+
+    this.accessToken = (
+      (await response.json()) as TokenResponseModel
+    ).accessToken;
+
+    if (this.accessToken) {
+      this.router.navigate(['test-users']);
+    }
+  }
+
+  private async refreshToken() {
+    const response = await fetch(this.apiRefreshUrl, {
+      method: 'GET',
+      credentials: 'include',
+    });
+
+    this.accessToken = (
+      (await response.json()) as TokenResponseModel
+    ).accessToken;
+  }
+
+  async isAuthenticated() {
+    const accessToken = await this.getAccessToken();
+
+    if (accessToken) {
+      const response = await fetch(this.apiMeUrl, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        credentials: 'include',
+      });
+
+      return response.status === 200;
+    }
+
+    return false;
+  }
+
+  async getTestUsers() {
+    const accessToken = await this.getAccessToken();
+
+    if (accessToken) {
+      const response = await fetch(`${environment.api}/users`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        credentials: 'include',
+      });
+
+      return await response.json();
+    }
   }
 }

@@ -18,11 +18,7 @@ export class LoginComponent implements OnInit {
 
   constructor(private authService: AuthService) {}
 
-  ngOnInit(): void {
-    if (!this.authService.token) {
-      this.authService.refreshToken();
-    }
-  }
+  ngOnInit(): void {}
 
   onSubmit() {
     if (!this.emailAndPaswordModel.email) {
@@ -38,9 +34,8 @@ export class LoginComponent implements OnInit {
     this.authService.signIn(this.emailAndPaswordModel);
   }
 
-  onTest() {
-    this.authService.getTestUsers().subscribe({
-      next: (users) => console.log(users),
-    });
+  async onTest() {
+    const testUsers = await this.authService.getTestUsers();
+    console.log(testUsers);
   }
 }
