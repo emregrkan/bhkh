@@ -1,15 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { StoryModel } from 'src/app/models/story-model';
 
 @Component({
   selector: 'app-story-card',
   templateUrl: './story-card.component.html',
-  styleUrls: ['./story-card.component.css']
+  styleUrls: ['./story-card.component.css'],
 })
-export class StoryCardComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
+export class StoryCardComponent {
+  @Input() story: StoryModel | undefined = undefined;
 }

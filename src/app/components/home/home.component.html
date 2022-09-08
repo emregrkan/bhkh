@@ -1,5 +1,8 @@
-<ng-container *ngIf="loadedStories">
-  <div *ngFor="let story of loadedStories">
-    <p>{{ story.content }}</p>
+<ng-container *ngIf="stories != []">
+  <div
+    class="flex flex-col justify-center items-center mt-8"
+    *ngFor="let story of stories"
+  >
+    <app-story-card [story]="story"></app-story-card>
   </div>
 </ng-container>
