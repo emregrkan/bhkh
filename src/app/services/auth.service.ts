@@ -16,14 +16,6 @@ export class AuthService {
 
   constructor(private router: Router) {}
 
-  private async getAccessToken() {
-    if (!this.accessToken) {
-      await this.refreshToken();
-    }
-
-    return this.accessToken;
-  }
-
   async signIn(emailAndPassword: EmailAndPasswordModel) {
     const urlencoded = new URLSearchParams();
     urlencoded.append('email', emailAndPassword.email);
@@ -47,17 +39,6 @@ export class AuthService {
     }
   }
 
-  private async refreshToken() {
-    const response = await fetch(this.apiRefreshUrl, {
-      method: 'GET',
-      credentials: 'include',
-    });
-
-    this.accessToken = (
-      (await response.json()) as TokenResponseModel
-    ).accessToken;
-  }
-
   async isAuthenticated() {
     const accessToken = await this.getAccessToken();
 
@@ -74,6 +55,29 @@ export class AuthService {
     }
 
     return false;
+  }
+
+  private async getAccessToken() {
+    if (!this.accessToken) {
+      await this.refreshToken();
+    }
+
+    return this.accessToken;
+  }
+
+  private async refreshToken() {
+    try {
+      const response = await fetch(this.apiRefreshUrl, {
+        method: 'GET',
+        credentials: 'include',
+      });
+
+      this.accessToken = (
+        (await response.json()) as TokenResponseModel
+      ).accessToken;
+    } catch {
+      this.accessToken = null;
+    }
   }
 
   async getTestUsers() {
