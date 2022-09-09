@@ -1,8 +1,7 @@
-<ng-container *ngIf="stories != []">
-  <div
-    class="flex flex-col justify-center items-center mt-8"
-    *ngFor="let story of stories"
-  >
-    <app-story-card [story]="story"></app-story-card>
+<ng-container *ngIf="stories !== []">
+  <div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4 mt-10">
+    <ng-container *ngFor="let story of stories">
+      <app-story-card [story]="story" [ngClass]="'mx-auto'"></app-story-card>
+    </ng-container>
   </div>
 </ng-container>

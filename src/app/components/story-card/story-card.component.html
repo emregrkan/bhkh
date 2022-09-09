@@ -1,8 +1,11 @@
 <ng-container *ngIf="story">
-  <div class="card w-96 bg-base-100 shadow-xl">
+  <div class="card max-w-lg bg-base-100 shadow-xl">
     <div class="card-body">
       <h2 class="card-title">{{ story.title }}</h2>
-      <p>{{ story.content }}</p>
+      <p class="line-clamp-6 ...">{{ story.content }}...</p>
+    </div>
+    <div class="card-actions">
+      <a [routerLink]="story._links.self.href">Devamı</a>
     </div>
   </div>
 </ng-container>

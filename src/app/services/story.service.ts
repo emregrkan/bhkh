@@ -19,12 +19,14 @@ export class StoryService {
     sort: any = undefined
   ): Promise<StoriesResponseModel> {
     const accessToken = await this.authService.getAccessToken();
+    const headers = new Headers();
+    headers.append('Authorization', `Bearer ${accessToken}`);
+    headers.append('X-Forwarded-Host', 'localhost');
+    headers.append('X-Forwarded-Port', '4200');
 
     const response = await fetch(this.apiStoriesUrl, {
       method: 'GET',
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
+      headers: headers,
       credentials: 'include',
     });
 
